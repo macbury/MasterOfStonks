@@ -1,0 +1,53 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:10
+    restart: always
+    ports:
+      - 19372:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      PGDATA: /data
+    volumes:
+      - db-data:/data
+  hub:
+    image: selenium/hub
+    ports:
+      - "4444:4444"
+    environment:
+      GRID_MAX_SESSION: 16
+      GRID_BROWSER_TIMEOUT: 3000
+      GRID_TIMEOUT: 3000
+  firefox:
+    image: selenium/node-firefox-debug
+    depends_on:
+      - hub
+    environment:
+      HUB_PORT_4444_TCP_ADDR: hub
+      HUB_PORT_4444_TCP_PORT: 4444
+      NODE_MAX_SESSION: 16
+      NODE_MAX_INSTANCES: 16
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "5900:5900"
+    links:
+      - hub
+  node-red:
+    image: nodered/node-red:latest-12
+    restart: unless-stopped
+    network_mode: host
+    dns:
+      - 9.9.9.9
+      - 149.112.112.112
+    ports:
+      - 1880:1880
+    environment:
+      - TZ=Europe/Warsaw
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    volumes:
+      - node-red:/data
+volumes:
+  db-data:
+  node-red:
