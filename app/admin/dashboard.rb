@@ -18,8 +18,12 @@ ActiveAdmin.register_page "Dashboard" do
           end
         end
 
-        panel "Total value" do
+        panel "Wartość rynkowa" do
           h2 amounts.map { |a| a[:amount] }.sum.format
+        end
+
+        panel "Wartość dodana" do
+          h2 Stats::NetTotalSum.call(Time.zone.today).format
         end
       end
     end
