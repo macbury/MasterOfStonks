@@ -14,7 +14,7 @@ class ExchangeWith < Service
   attr_reader :money, :currency
 
   def check_rates!
-    if !eu_bank.rates_updated_at || eu_bank.rates_updated_at < Time.now - 6.hours
+    if eu_bank.rates_updated_at.nil? || eu_bank.rates_updated_at < 1.day.ago
       eu_bank.save_rates(cache)
       eu_bank.update_rates(cache)
     end    

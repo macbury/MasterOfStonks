@@ -9,7 +9,8 @@ module Stats
       @dates = (from..to).each_with_object({}) { |date, dates| dates[block&.call(date) || date] = 0.to_money }
 
       PositionDateEntry.includes(:position).where('date >= :from AND date <= :to', from: from, to: to).find_each do |entry|
-        date = block&.call(entry.date.to_date) || entry.date.to_date
+        date = block_given? ? yield(entry.date.to_date) : entry.date.to_date
+
         Rails.logger.info "Entry for: #{date}"
         @dates[date] += ExchangeWith.call(entry.value - entry.position.open_value)
       end

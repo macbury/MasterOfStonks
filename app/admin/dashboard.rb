@@ -34,8 +34,12 @@ ActiveAdmin.register_page "Dashboard" do
             line_chart Stats::NetSumChart.call(from: 1.month.ago), suffix: ' zł', thousands: ",", decimal: '.'
           end
 
-          tab "Added value monthly" do
-            line_chart Stats::NetSumChart.call(from: 1.year.ago) { |date| date.at_beginning_of_day.to_date }, suffix: ' zł', thousands: ",", decimal: '.'
+          tab "Added value querterly" do
+            line_chart Stats::NetSumChart.call(from: 3.months.ago), suffix: ' zł', thousands: ",", decimal: '.'
+          end
+
+          tab "Added value yearly" do
+            line_chart Stats::NetSumChart.call(from: 12.months.ago), suffix: ' zł', thousands: ",", decimal: '.'
           end
         end
       end
