@@ -30,6 +30,19 @@ ActiveAdmin.register_page "Dashboard" do
     columns do
       column width: '100%' do
         tabs do
+          tab "Added value daily" do
+            line_chart Stats::NetSumChart.call(from: 1.month.ago), suffix: ' zł', thousands: ",", decimal: '.'
+          end
+
+          tab "Added value monthly" do
+            line_chart Stats::NetSumChart.call(from: 1.year.ago) { |date| date.at_beginning_of_day.to_date }, suffix: ' zł', thousands: ",", decimal: '.'
+          end
+        end
+      end
+    end
+    columns do
+      column width: '100%' do
+        tabs do
           tab "Net value monthly" do
             line_chart Stats::NetValue.call(from: 1.month.ago), suffix: ' zł', thousands: ",", decimal: '.'
           end
